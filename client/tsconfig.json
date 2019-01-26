@@ -1,23 +1,27 @@
 {
   "compilerOptions": {
+    "outDir": "build",
     "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "esnext.asynciterable"
     ],
+    "rootDir": "src",
+    "sourceMap": true,
     "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve"
+    "noEmit": true
   },
   "include": [
     "src"

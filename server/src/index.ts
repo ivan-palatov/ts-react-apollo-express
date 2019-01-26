@@ -3,6 +3,7 @@ import * as express from "express";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server-express";
 import * as session from "express-session";
+import * as pgStore from "connect-pg-simple";
 
 import { typeDefs } from "./typeDefs";
 import { resolvers } from "./resolvers";
@@ -16,22 +17,35 @@ const startServer = async () => {
     resolvers,
     context: ({ req }: Req) => ({ req })
   });
+
+  // connect typeorm to DB
+  const connection = await createConnection();
+
+  const SessionStore = pgStore(session);
+
   const app = express();
   // Add sessions to the app
   app.use(
     session({
+      store: new SessionStore({
+        pgPromise: connection
+      }),
       resave: false,
       saveUninitialized: false,
       secret: "TOP_SECRET"
     })
   );
   // Connect apollo and express
-  server.applyMiddleware({ app });
-  // connect typeorm to DB
-  await createConnection();
+  server.applyMiddleware({
+    app,
+    cors: {
+      credentials: true,
+      origin: "http://localhost:3000"
+    }
+  });
 
-  app.listen(3000, () => {
-    console.log(`🚀 Server ready at http://localhost:3000${server.graphqlPath}`);
+  app.listen(4000, () => {
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
   });
 };
 
