@@ -5,6 +5,7 @@ import Login from "./components/user/Login";
 import Register from "./components/user/Register";
 import Me from "./components/user/Me";
 import App from "./App";
+import Subscription from "./components/account/Subscription";
 
 class Routes extends Component {
   render() {
@@ -15,6 +16,7 @@ class Routes extends Component {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/me" component={Me} />
+          <Route path="/subscription" component={Subscription} />
         </Switch>
       </BrowserRouter>
     );
