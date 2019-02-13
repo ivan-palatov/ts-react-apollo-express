@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
 import { Query } from 'react-apollo';
-import { gql } from 'apollo-boost';
 import { Redirect } from 'react-router-dom';
 
 import { MeQuery } from '../../schemaTypes';
 import Subscription from './Subscription';
-
-const meQuery = gql`
-  query MeQuery {
-    me {
-      id
-      email
-      type
-    }
-  }
-`;
+import { meQuery } from '../../graphql/queries/me';
 
 class Account extends Component {
   state = {};
   render() {
     return (
-      <Query<MeQuery> fetchPolicy="network-only" query={meQuery}>
+      <Query<MeQuery> query={meQuery}>
         {({ data, loading }) => {
           if (loading) {
             return <div>Loading...</div>;
@@ -34,8 +24,7 @@ class Account extends Component {
           if (data.me.type === 'free-trial') {
             return <Subscription />;
           }
-
-          return <Redirect to="paid-users" />;
+          return <div>You are subscribed to our stuff.</div>;
         }}
       </Query>
     );

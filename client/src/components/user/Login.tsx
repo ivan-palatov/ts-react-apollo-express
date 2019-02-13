@@ -1,38 +1,52 @@
-import React, { Component } from "react";
-import { Mutation } from "react-apollo";
-import { gql } from "apollo-boost";
-import { LoginMutationVariables, LoginMutation } from "../../schemaTypes";
-import { RouteComponentProps } from "react-router-dom";
+import React, { Component } from 'react';
+import { Mutation } from 'react-apollo';
+import { gql } from 'apollo-boost';
+import { LoginMutationVariables, LoginMutation } from '../../schemaTypes';
+import { RouteComponentProps } from 'react-router-dom';
+import { meQuery } from '../../graphql/queries/me';
 
 const loginMutation = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       id
       email
+      type
     }
   }
 `;
 
 class Login extends Component<RouteComponentProps<{}>> {
   state = {
-    email: "",
-    password: ""
+    email: '',
+    password: '',
   };
 
-  handleChange(e: React.FormEvent<HTMLInputElement>) {
+  handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     this.setState({ [e.currentTarget.name]: e.currentTarget.value });
   }
 
   render() {
     const { email, password } = this.state;
     return (
-      <Mutation<LoginMutation, LoginMutationVariables> mutation={loginMutation}>
-        {mutate => (
+      <Mutation<LoginMutation, LoginMutationVariables>
+        update={(cache, { data }) => {
+          if (!data || !data.login) {
+            return;
+          }
+          cache.writeQuery({
+            query: meQuery,
+            data: { me: data.login },
+          });
+        }}
+        mutation={loginMutation}
+      >
+        {(mutate, {client}) => (
           <form
             onSubmit={async e => {
               e.preventDefault();
+              await client.resetStore();
               const response = await mutate({ variables: { email, password } });
-              this.props.history.push("/account");
+              this.props.history.push('/account');
             }}
           >
             <div className="field">
@@ -47,7 +61,7 @@ class Login extends Component<RouteComponentProps<{}>> {
                   placeholder="Enter email"
                   name="email"
                   value={email}
-                  onChange={this.handleChange.bind(this)}
+                  onChange={this.handleChange}
                 />
                 <span className="icon is-small is-left">
                   <i className="fas fa-envelope" />
@@ -66,7 +80,7 @@ class Login extends Component<RouteComponentProps<{}>> {
                   placeholder="Enter password"
                   name="password"
                   value={password}
-                  onChange={this.handleChange.bind(this)}
+                  onChange={this.handleChange}
                 />
                 <span className="icon is-small is-left">
                   <i className="fas fa-key" />
