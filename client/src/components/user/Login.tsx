@@ -32,8 +32,7 @@ class Login extends Component<RouteComponentProps<{}>> {
             onSubmit={async e => {
               e.preventDefault();
               const response = await mutate({ variables: { email, password } });
-              console.log(response);
-              this.props.history.push("/me");
+              this.props.history.push("/account");
             }}
           >
             <div className="field">

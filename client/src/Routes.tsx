@@ -3,9 +3,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import Login from "./components/user/Login";
 import Register from "./components/user/Register";
-import Me from "./components/user/Me";
 import App from "./App";
-import Subscription from "./components/account/Subscription";
+import Account from "./components/account/Account";
+import PaidUsers from "./components/account/PaidUsers";
 
 class Routes extends Component {
   render() {
@@ -15,8 +15,8 @@ class Routes extends Component {
           <Route path="/" exact component={App} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
-          <Route path="/me" component={Me} />
-          <Route path="/subscription" component={Subscription} />
+          <Route path="/account" component={Account} />
+          <Route path="/paid-users" component={PaidUsers} />
         </Switch>
       </BrowserRouter>
     );
