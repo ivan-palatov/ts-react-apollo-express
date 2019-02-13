@@ -17,6 +17,9 @@ export class User extends BaseEntity {
   @Column({ default: "free-trial" })
   type: string;
 
+  @Column({ nullable: true })
+  ccLast4: string;
+
   @Column()
   password: string;
 

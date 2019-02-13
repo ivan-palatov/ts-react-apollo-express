@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { Mutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
-import { LoginMutationVariables, LoginMutation } from '../../schemaTypes';
 import { RouteComponentProps } from 'react-router-dom';
+
 import { meQuery } from '../../graphql/queries/me';
+import { LoginMutationVariables, LoginMutation } from '../../schemaTypes';
+import { userFragment } from '../../graphql/fragments/userFragment';
 
 const loginMutation = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      id
-      email
-      type
+      ...UserInfo
     }
   }
+
+  ${userFragment}
 `;
 
 class Login extends Component<RouteComponentProps<{}>> {
@@ -23,7 +25,7 @@ class Login extends Component<RouteComponentProps<{}>> {
 
   handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     this.setState({ [e.currentTarget.name]: e.currentTarget.value });
-  }
+  };
 
   render() {
     const { email, password } = this.state;
@@ -40,7 +42,7 @@ class Login extends Component<RouteComponentProps<{}>> {
         }}
         mutation={loginMutation}
       >
-        {(mutate, {client}) => (
+        {(mutate, { client }) => (
           <form
             onSubmit={async e => {
               e.preventDefault();
