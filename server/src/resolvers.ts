@@ -40,14 +40,29 @@ export const resolvers: IResolvers = {
         throw new Error('We have no idea what happened to you, you might have been deleted.');
       }
 
-      const customer = await stripe.customers.create({
-        email: user.email,
-        source,
-        plan: process.env.STRIPE_PLAN!,
-      });
+      let stripeId = user.stripeId;
+      if (!user.stripeId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          source,
+          plan: process.env.STRIPE_PLAN!,
+        });
+        stripeId = customer.id;
+      } else {
+        // update customer
+        await stripe.customers.update(stripeId, { source });
+        await stripe.subscriptions.create({
+          customer: stripeId,
+          items: [
+            {
+              plan: process.env.STRIPE_PLAN!,
+            },
+          ],
+        });
+      }
 
       user.ccLast4 = ccLast4;
-      user.stripeId = customer.id;
+      user.stripeId = stripeId;
       user.type = 'Standard';
       await user.save();
 
@@ -68,6 +83,32 @@ export const resolvers: IResolvers = {
 
       await stripe.customers.update(user.stripeId, { source });
       user.ccLast4 = ccLast4;
+      await user.save();
+      return user;
+    },
+    cancelSubscription: async (parent, _, { req }) => {
+      if (!req.session || !req.session.userId) {
+        throw new Error('Not authenticated!');
+      }
+      const user = await User.findOne(req.session.userId);
+      if (!user) {
+        throw new Error('We have no idea what happened to you, you might have been deleted.');
+      }
+
+      if (!user.stripeId) {
+        throw new Error("You haven't subscribed yet, so there's no credit card registered.");
+      }
+
+      const stripeCustomer = await stripe.customers.retrieve(user.stripeId);
+      const [subscription] = stripeCustomer.subscriptions.data;
+      await stripe.subscriptions.del(subscription.id);
+
+      if (stripeCustomer.default_source) {
+        await stripe.customers.deleteCard(user.stripeId, stripeCustomer.default_source as string);
+      }
+
+      user.type = 'free-trial';
+      user.stripeId = '';
       await user.save();
       return user;
     },

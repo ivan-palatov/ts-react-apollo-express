@@ -6,6 +6,7 @@ import { MeQuery } from '../../schemaTypes';
 import Subscription from './Subscription';
 import { meQuery } from '../../graphql/queries/me';
 import ChangeCreditCard from './ChangeCreditCard';
+import CancelSubscription from './CancelSubscription';
 
 class Account extends Component {
   state = {};
@@ -28,8 +29,13 @@ class Account extends Component {
           return (
             <div>
               <h3 className="has-text-centered subtitle">You are subscribed to our stuff.</h3>
-              <p className="has-text-centered">{data.me.ccLast4 ? `Current credit card number: ${data.me.ccLast4}` : 'We dont know your card number.'}</p>
+              <p className="has-text-centered">
+                {data.me.ccLast4
+                  ? `Current credit card number: ${data.me.ccLast4}`
+                  : 'We dont know your card number.'}
+              </p>
               <ChangeCreditCard />
+              <CancelSubscription />
             </div>
           );
         }}

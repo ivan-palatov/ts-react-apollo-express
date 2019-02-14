@@ -32,6 +32,8 @@ class Subscription extends Component {
             stripeKey={process.env.REACT_APP_STRIPE_KEY!}
             name="Subscribe"
             panelLabel="Subscribe"
+            amount={1000}
+            currency="USD"
             ComponentClass="span"
           >
             <button className="button is-info">Subscribe</button>
