@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { gql } from 'apollo-boost';
 import { Mutation } from 'react-apollo';
 
@@ -15,19 +15,14 @@ const cancelSubscriptionMutation = gql`
   ${userFragment}
 `;
 
-class CancelSubscription extends Component {
-  state = {};
-  render() {
-    return (
-      <Mutation<CancelSubscriptionMutation> mutation={cancelSubscriptionMutation}>
-        {mutate => (
-          <button onClick={() => mutate()} className="button is-danger">
-            Cancel Subscription
-          </button>
-        )}
-      </Mutation>
-    );
-  }
-}
+const CancelSubscription: React.FunctionComponent = () => (
+  <Mutation<CancelSubscriptionMutation> mutation={cancelSubscriptionMutation}>
+    {mutate => (
+      <button onClick={() => mutate()} className="button is-danger">
+        Cancel Subscription
+      </button>
+    )}
+  </Mutation>
+);
 
 export default CancelSubscription;

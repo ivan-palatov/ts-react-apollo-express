@@ -46,6 +46,7 @@ const startServer = async () => {
   });
 
   app.listen(4000, () => {
+    console.clear();
     console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
   });
 };
