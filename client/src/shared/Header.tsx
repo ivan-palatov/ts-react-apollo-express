@@ -4,6 +4,7 @@ import { meQuery } from '../graphql/queries/me';
 import { Query } from 'react-apollo';
 
 import { MeQuery } from '../schemaTypes';
+import { HeaderButton } from './HeaderButton';
 
 class Header extends Component {
   state = {};
@@ -13,14 +14,21 @@ class Header extends Component {
         style={{
           height: 50,
           width: '100%',
-          backgroundColor: '#fafafa',
+          backgroundColor: 'rgb(255, 254, 252)',
           display: 'flex',
           justifyContent: 'space-around',
           padding: 10,
+          alignItems: 'center',
         }}
       >
         <Link to="/">
-          <h2 className="title">Stripe Example</h2>
+          <HeaderButton
+            style={{
+              fontSize: '24px',
+            }}
+          >
+            Stripe Example
+          </HeaderButton>
         </Link>
         <Query<MeQuery> query={meQuery}>
           {({ data, loading }) => {
@@ -30,21 +38,21 @@ class Header extends Component {
 
             if (!data.me) {
               return (
-                <>
-                  <div>
-                    <Link to="/login">Login</Link>
-                  </div>
-                  <div>
-                    <Link to="/register">Register</Link>
-                  </div>
-                </>
+                <div>
+                  <Link to="/login">
+                    <HeaderButton>Login</HeaderButton>
+                  </Link>
+                  <Link to="/register">
+                    <HeaderButton>Register</HeaderButton>
+                  </Link>
+                </div>
               );
             }
 
             return (
-              <div>
-                <Link to="/account">Account</Link>
-              </div>
+              <Link to="/account">
+                <HeaderButton>Account</HeaderButton>
+              </Link>
             );
           }}
         </Query>
